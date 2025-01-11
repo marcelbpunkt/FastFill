@@ -53,8 +53,9 @@ namespace FastFill
 
             // Binds the configuration, the passed variable will always reflect the current value set
             patchedHoldRepeatInterval = Config.Bind("General", "holdRepeatInterval", DEFAULT_HOLD_REPEAT_INTERVAL,
-                "Time in seconds after which 'Use' is executed again while holding the 'Use' key "
-                + "(e.g. another piece of wood is inserted into a kiln). Must be between 0 and 0.2!");
+                "Time in seconds after which 'Use' is executed again while holding the 'Use' key\n"
+                + "(e.g. another piece of wood is inserted into a kiln). Must be between 0 and 0.2\n"
+                + "where 0 disables the repeated insertion entirely.");
 
             Config.Save();   // Save only once
             Config.SaveOnConfigSet = true;   // Re-enable saving on config changes

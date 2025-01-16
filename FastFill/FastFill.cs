@@ -199,4 +199,13 @@ namespace FastFill
             return FastFill.Prefix(nameof(Turret), character, hold, ref ___m_holdRepeatInterval);
         }
     }
+
+    [HarmonyPatch(typeof(CookingStation), nameof(CookingStation.Interact))]
+    class CookingStation_Interact_Patch
+    {
+        static bool Prefix(Humanoid user, ref bool hold, ref CookingStation __instance)
+        {
+            return true;
+        }
+    }
 }

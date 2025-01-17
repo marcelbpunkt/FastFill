@@ -23,6 +23,7 @@ namespace FastFill
         public const string HOLD_REPEAT_INTERVAL_NAME = "holdRepeatInterval";
         public const float ORIGINAL_HOLD_REPEAT_INTERVAL = 0.2f;
         public const float DEFAULT_HOLD_REPEAT_INTERVAL = 0.05f;
+        private static readonly AcceptableValueRange<float> VALUE_RANGE = new AcceptableValueRange<float>(0.0f, 0.2f);
         private const string CFG_FILE_NAME = MOD_ID + ".cfg";
         private static readonly string CFG_FILE_FULL_PATH = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + CFG_FILE_NAME;
 
@@ -35,19 +36,21 @@ namespace FastFill
         public static float GetPatchedHoldRepeatInterval(Humanoid user)
         {
             // I did not know how to check the value when it is set
-            if (patchedHoldRepeatInterval.Value > ORIGINAL_HOLD_REPEAT_INTERVAL)
+            /* v1.0.2: I found the AcceptableValueRange class and the matching
+             * ConfigDescription constructor and Config.Bind method. Should make the min/max checks BepInEx's problem.
+            if (patchedHoldRepeatInterval.Value > VALUE_RANGE.MaxValue)
             {
                 displayChatMessage($"[{MOD_NAME}] {HOLD_REPEAT_INTERVAL_NAME} too large! "
-                        + $"Setting back to max value ({ORIGINAL_HOLD_REPEAT_INTERVAL} seconds).");
-                patchedHoldRepeatInterval.Value = ORIGINAL_HOLD_REPEAT_INTERVAL;
+                        + $"Setting back to max value ({VALUE_RANGE.MaxValue} seconds).");
+                patchedHoldRepeatInterval.Value = VALUE_RANGE.MaxValue;
             }
             else if (patchedHoldRepeatInterval.Value < 0)
             {
                 displayChatMessage($"[{MOD_NAME}] {HOLD_REPEAT_INTERVAL_NAME} too small! "
-                    + "Setting back to 0 seconds, i.e. holding 'Use' will only insert a single item.");
-                patchedHoldRepeatInterval.Value = 0;
+                    + $"Setting back to {VALUE_RANGE.MinValue} seconds.");
+                patchedHoldRepeatInterval.Value = VALUE_RANGE.MinValue;
             }
-            
+            */
 
             return patchedHoldRepeatInterval.Value;
         }
@@ -98,12 +101,13 @@ namespace FastFill
             // Config.SaveOnConfigSet = false;   // Disable saving when binding each following config
 
             // Binds the configuration, the passed variable will always reflect the current value set
-            patchedHoldRepeatInterval = Config.Bind("General", HOLD_REPEAT_INTERVAL_NAME, DEFAULT_HOLD_REPEAT_INTERVAL,
-                "Time in seconds after which another item is inserted while holding the 'Use' key\n"
+            string description = "Time in seconds after which another item is inserted while holding the 'Use' key\n"
                 + "(e.g. another piece of wood is inserted into a kiln). Must be between 0 and 0.2 (both inclusive)\n"
-                + "where 0 will only insert one single item no matter how long the player holds 'Use'.");
+                + "where 0 will only insert one single item no matter how long the player holds 'Use'.";
+            ConfigDescription configDescription = new ConfigDescription(description, VALUE_RANGE, null);
+            patchedHoldRepeatInterval = Config.Bind("General", HOLD_REPEAT_INTERVAL_NAME, DEFAULT_HOLD_REPEAT_INTERVAL, configDescription);
 
-            Config.Save();   // Save only once
+            // Config.Save();   // Save only once
 
             // Config.SaveOnConfigSet = true;   // Re-enable saving on config changes
 

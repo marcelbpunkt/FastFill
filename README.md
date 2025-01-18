@@ -1,6 +1,6 @@
 # FastFill
 
-Author: marcelbpunkt (GitHub) aka madmarty28 (Nexus/Vortex)
+Author: marcelbpunkt
 
 ## Introduction
 
